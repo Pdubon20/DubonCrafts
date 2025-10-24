@@ -1,0 +1,704 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Down to the touch. Find your type! • Wood Flooring Catalogue</title>
+  <style>
+    /* Professional font: IBM Plex Sans (variable). Place files in /fonts to activate. */
+    @font-face {
+      font-family: 'IBM Plex Sans';
+      src: url('fonts/IBMPlexSans-Var.woff2') format('woff2');
+      font-weight: 100 700;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'IBM Plex Sans';
+      src: url('fonts/IBMPlexSans-Var-Italic.woff2') format('woff2');
+      font-weight: 100 700;
+      font-style: italic;
+      font-display: swap;
+    }
+    :root {
+      --font-sans: 'IBM Plex Sans', Inter, ui-sans-serif, system-ui, 'Segoe UI', 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
+      --page-max: 1200px;
+      --gap: 22px;
+      --bar-height: 110px;
+      --bar-radius: 22px;
+      --ring: 0 0 0 3px rgba(0, 120, 255, .25);
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: var(--font-sans); font-feature-settings: 'liga' 1, 'kern' 1;
+      color: #0c0d0c;
+      background: #f6f7f8;
+      line-height: 1.35;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    .wrap { max-width: var(--page-max); margin: 28px auto 80px; padding: 0 20px; }
+
+    /* Layout */
+    .catalog { display: grid; grid-template-columns: 300px 1fr; gap: 28px; align-items: start; margin-top: 20px; }
+    @media (max-width: 980px) { .catalog { grid-template-columns: 1fr; } }
+
+    /* Filters sidebar */
+    .filters { position: sticky; top: 18px; align-self: start; }
+    .filter-card {
+      background: #fff; border: 1px solid rgba(2,8,23,.08); border-radius: 16px; box-shadow: 0 8px 24px rgba(2,8,23,.06);
+      padding: 8px;
+      overflow: auto; /* scrollable */
+      max-height: calc(100vh - 36px);
+      overscroll-behavior: contain;
+      scrollbar-gutter: stable;
+    }
+    .flt { border-top: 1px solid rgba(2,8,23,.06); }
+    .flt:first-child { border-top: 0; }
+    .flt summary { display: flex; justify-content: space-between; align-items: center; cursor: pointer; padding: 14px 10px; font-weight: 600; }
+    .flt summary::-webkit-details-marker { display: none; }
+    .flt summary .chev { transition: transform .18s ease; }
+    details[open] > summary .chev { transform: rotate(180deg); }
+    .flt .body { padding: 0 10px 14px; display: grid; gap: 8px; }
+
+    .opt { display: flex; align-items: center; gap: 8px; }
+    .opt input { accent-color: #3b82f6; }
+
+    .chip-opt { display: inline-flex; gap: 6px; flex-wrap: wrap; position: relative; }
+    .chip-opt label { font-size: 12px; padding: 4px 10px; border-radius: 999px; background: #f1f5f9; border: 1px solid rgba(18,18,18,.06); cursor: pointer; }
+    .chip-opt input { position: absolute; left: -9999px; }
+    .chip-opt input:checked + label { background: #e8effe; border-color: #c7d2fe; }
+    /* Keyboard accessibility: show focus on the visible chip */
+    .chip-opt input:focus-visible + label, .chip-opt label:focus-visible { outline: 2px solid #3b82f6; outline-offset: 2px; border-color: #93c5fd; }
+
+    .filter-actions { display: flex; gap: 10px; padding: 10px; border-top: 1px solid rgba(2,8,23,.06); }
+    .btn { height: 36px; border-radius: 10px; border: 1px solid rgba(2,8,23,.12); background: #fff; padding: 0 12px; font: inherit; cursor: pointer; }
+
+    .no-results { display: none; margin: 10px 2px 0; color: #475569; font-size: 14px; }
+    .no-results.show { display: block; }
+
+    header { margin-bottom: 18px; }
+    .hero {
+      position: relative; border-radius: 28px; padding: 34px 28px 28px;
+      background: radial-gradient(1200px 400px at 10% -10%, rgba(15,23,42,.06), transparent 60%), linear-gradient(180deg, #ffffff, #fafbfc);
+      border: 1px solid rgba(15,23,42,.08); box-shadow: 0 10px 30px rgba(2,8,23,.06); overflow: hidden;
+    }
+    .hero::after {
+      content: ""; position: absolute; inset: -1px;
+      background: repeating-linear-gradient(135deg, rgba(65,105,225,.08) 0 16px, rgba(65,105,225,0) 16px 32px);
+      pointer-events: none;
+    }
+    .overline { font-size: 12px; letter-spacing: .18em; text-transform: uppercase; color: #475569; margin-bottom: 10px; }
+    header h1 { margin: 0; font-size: clamp(28px, 5vw, 44px); line-height: 1.05; letter-spacing: .2px; }
+    header h1 .t2 { font-weight: 500; opacity: .9; }
+    .sub { margin: 10px 0 18px; color: #334155; font-size: clamp(14px, 1.7vw, 16px); max-width: 70ch; }
+    .controls { display: flex; gap: 10px; align-items: center; }
+    .search-input { flex: 1 1 320px; max-width: 520px; height: 42px; border-radius: 12px; border: 1px solid rgba(2,8,23,.12); background: #ffffff; padding: 10px 12px; font: inherit; box-shadow: 0 1px 0 rgba(255,255,255,.6) inset; }
+    .search-input:focus { outline: none; box-shadow: 0 0 0 3px rgba(59,130,246,.25); border-color: rgba(2,8,23,.2); }
+    .visually-hidden { position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+    .species-list { display: grid; gap: var(--gap); margin-top: 18px; }
+
+    /* Long clickable bars */
+    a.species { position: relative; display: block; height: var(--bar-height); border-radius: var(--bar-radius); overflow: hidden; text-decoration: none; color: inherit; background: #e8e1d8; border: 1px solid rgba(18,18,18,.08); box-shadow: 0 1px 0 rgba(0,0,0,.04) inset; transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease, filter .18s ease; isolation: isolate; }
+    a.species:focus-visible { outline: none; box-shadow: var(--ring); }
+    a.species:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(0,0,0,.14); border-color: rgba(18, 18, 18, 0.18); filter: saturate(1.02); }
+
+    .bg { position: absolute; inset: 0; z-index: 0; }
+    .bg img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; filter: contrast(.98) saturate(1.04); }
+
+    .bg .ph { position: absolute; inset: 0; z-index: 0; background: linear-gradient(0deg, rgba(255,255,255,.28), rgba(255,255,255,.18)), repeating-linear-gradient(90deg, #caa472 0 9px, #be9867 9px 18px, #cda978 18px 27px); }
+    .veil { position: absolute; inset: 0; z-index: 1; background: linear-gradient(90deg, rgba(255,255,255,.92) 0 36%, rgba(255,255,255,.58) 36% 58%, rgba(255,255,255,.15) 58% 100%); pointer-events: none; }
+
+    .content { position: relative; z-index: 2; height: 100%; width: 100%; display: grid; grid-template-columns: 120px 1fr auto; align-items: center; gap: 18px; padding: 0 22px 0 22px; }
+
+    .thumb { height: calc(var(--bar-height) - 24px); width: 120px; border-radius: 12px; overflow: hidden; border: 1px solid rgba(18,18,18,.1); background: repeating-linear-gradient(90deg, #d8b487 0 10px, #caa372 10px 20px); box-shadow: 0 1px 0 rgba(255,255,255,.5) inset; }
+    .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+    .copy h3 { margin: 0 0 4px; font-size: clamp(16px, 2.2vw, 20px); letter-spacing: .3px; }
+    .copy p { margin: 0; font-size: clamp(13px, 1.6vw, 14px); color: #334155; max-width: 90ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+    .cta { font-weight: 600; font-size: 14px; color: #0f172a; opacity: .9; }
+    a.species:hover .cta { text-decoration: underline; }
+
+    .badge { position: absolute; top: 10px; right: 12px; z-index: 3; font-size: 11px; letter-spacing: .2px; color: #0f172a; background: rgba(255,255,255,.9); border: 1px solid rgba(18,18,18,.08); padding: 4px 8px; border-radius: 999px; }
+
+    .details { margin-top: 10px; background: #ffffff; border: 1px solid rgba(18,18,18,.08); border-radius: 16px; box-shadow: 0 4px 16px rgba(0,0,0,.06); padding: 16px 18px; overflow: hidden; max-height: 0; opacity: 0; transition: max-height .28s ease, opacity .22s ease; }
+    .details.open { max-height: 520px; opacity: 1; }
+    .details h4 { margin: 2px 0 12px; font-size: 15px; letter-spacing: .2px; }
+
+    .spec-grid { display: grid; grid-template-columns: 160px 1fr; gap: 10px 18px; }
+    .spec-grid .k { font-weight: 600; color: #0f172a; opacity: .9; }
+    .spec-grid .v { color: #334155; }
+
+    .meter { height: 8px; background: #eef2f7; border-radius: 999px; overflow: hidden; box-shadow: inset 0 1px 0 rgba(0,0,0,.04); }
+    .meter .fill { height: 100%; width: var(--w, 0%); background: linear-gradient(90deg, #c7d2fe, #3b82f6); border-radius: 999px; }
+
+    .decor-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+    .chip { font-size: 12px; padding: 3px 8px; border-radius: 999px; background: #f1f5f9; border: 1px solid rgba(18,18,18,.06); }
+
+    @media (max-width: 640px) {
+      :root { --bar-height: 96px; --gap: 16px; }
+      .content { grid-template-columns: 92px 1fr; gap: 14px; }
+      .cta { display: none; }
+      .details.open { max-height: 680px; }
+      .spec-grid { grid-template-columns: 120px 1fr; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      a.species { transition: none; }
+      .details { transition: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="hero" role="region" aria-label="Catalogue header">
+        <div class="overline">Species Catalogue</div>
+        <h1>Down to the touch.<br><span class="t2">Find your type!</span></h1>
+        <p class="sub">Browse our most‑requested hardwoods. Compare appearance, hardness, and finish behavior. Use the search to jump straight to a species.</p>
+        <div class="controls">
+          <label class="visually-hidden" for="q">Search species</label>
+          <input id="q" class="search-input" type="search" placeholder="Search species (e.g., White Oak, Walnut)" autocomplete="off" />
+        </div>
+      </div>
+    </header>
+
+    <section class="catalog">
+      <aside class="filters">
+        <div class="filter-card" id="filterCard">
+          <details class="flt" open>
+            <summary>Color & Tone <span class="chev">▾</span></summary>
+            <div class="body">
+              <div class="opt"><input type="checkbox" id="tone-light" data-filter="tone" value="light"><label for="tone-light">Light</label></div>
+              <div class="opt"><input type="checkbox" id="tone-neutral" data-filter="tone" value="neutral"><label for="tone-neutral">Neutral/Beige</label></div>
+              <div class="opt"><input type="checkbox" id="tone-warm" data-filter="tone" value="warm"><label for="tone-warm">Warm</label></div>
+              <div class="opt"><input type="checkbox" id="tone-dark" data-filter="tone" value="dark"><label for="tone-dark">Dark</label></div>
+            </div>
+          </details>
+
+          <details class="flt" open>
+            <summary>Plank Width <span class="chev">▾</span></summary>
+            <div class="body chip-opt">
+              <input type="checkbox" id="width-wide" data-filter="width" value="wide"><label for="width-wide">Wide‑plank friendly</label>
+              <input type="checkbox" id="width-standard" data-filter="width" value="standard"><label for="width-standard">Standard</label>
+            </div>
+          </details>
+
+          <details class="flt" open>
+            <summary>Construction <span class="chev">▾</span></summary>
+            <div class="body chip-opt">
+              <input type="checkbox" id="con-both" data-filter="construction" value="both"><label for="con-both">Both</label>
+              <input type="checkbox" id="con-solid" data-filter="construction" value="solid"><label for="con-solid">Solid</label>
+              <input type="checkbox" id="con-engineered" data-filter="construction" value="engineered"><label for="con-engineered">Engineered</label>
+            </div>
+          </details>
+
+          <details class="flt">
+            <summary>Texture <span class="chev">▾</span></summary>
+            <div class="body chip-opt">
+              <input type="checkbox" id="tx-closed" data-filter="texture" value="closed"><label for="tx-closed">Closed/Tight grain</label>
+              <input type="checkbox" id="tx-open" data-filter="texture" value="open"><label for="tx-open">Open/Coarse grain</label>
+              <input type="checkbox" id="tx-straight" data-filter="texture" value="straight"><label for="tx-straight">Straight</label>
+              <input type="checkbox" id="tx-wavy" data-filter="texture" value="wavy"><label for="tx-wavy">Wavy/Curly</label>
+            </div>
+          </details>
+
+          <details class="flt">
+            <summary>Finish Effects <span class="chev">▾</span></summary>
+            <div class="body chip-opt">
+              <input type="checkbox" id="fx-reactive" data-filter="reactive" value="y"><label for="fx-reactive">Reactive/Fumed friendly</label>
+              <input type="checkbox" id="fx-natural" data-filter="finishpref" value="natural"><label for="fx-natural">Best natural</label>
+            </div>
+          </details>
+
+          <details class="flt">
+            <summary>Grain Character <span class="chev">▾</span></summary>
+            <div class="body chip-opt">
+              <input type="checkbox" id="gr-subtle" data-filter="grain" value="subtle"><label for="gr-subtle">Subtle</label>
+              <input type="checkbox" id="gr-medium" data-filter="grain" value="medium"><label for="gr-medium">Medium</label>
+              <input type="checkbox" id="gr-strong" data-filter="grain" value="pronounced"><label for="gr-strong">Pronounced</label>
+            </div>
+          </details>
+
+          <details class="flt">
+            <summary>Pattern Ready <span class="chev">▾</span></summary>
+            <div class="body chip-opt">
+              <input type="checkbox" id="ptn-hb" data-filter="pattern" value="herringbone"><label for="ptn-hb">Herringbone/Parquet</label>
+            </div>
+          </details>
+
+          <details class="flt">
+            <summary>Durability/Traffic <span class="chev">▾</span></summary>
+            <div class="body chip-opt">
+              <input type="checkbox" id="traf-heavy" data-filter="traffic" value="heavy"><label for="traf-heavy">Heavy traffic</label>
+              <input type="checkbox" id="traf-mod" data-filter="traffic" value="moderate"><label for="traf-mod">Moderate</label>
+              <input type="checkbox" id="traf-light" data-filter="traffic" value="light"><label for="traf-light">Light</label>
+            </div>
+          </details>
+
+          <details class="flt">
+            <summary>Budget <span class="chev">▾</span></summary>
+            <div class="body chip-opt">
+              <input type="checkbox" id="$-value" data-filter="price" value="value"><label for="$-value">Value</label>
+              <input type="checkbox" id="$-mid" data-filter="price" value="mid"><label for="$-mid">Mid</label>
+              <input type="checkbox" id="$-premium" data-filter="price" value="premium"><label for="$-premium">Premium</label>
+            </div>
+          </details>
+
+          <div class="filter-actions">
+            <button class="btn" id="clearFilters" aria-label="Clear all filters">Clear</button>
+          </div>
+        </div>
+      </aside>
+      <main>
+        <nav class="species-list" id="speciesList" aria-label="Wood species catalogue"></nav>
+        <p id="noResults" class="no-results" aria-live="polite">No matches. Try broadening your filters.</p>
+      </main>
+    </section>
+  </div>
+
+  <script>
+    // ─────────────────────────────────────────────────────────────────────────────
+    // Data: ordered from most popular (top) to least (bottom)
+    // Images: place files at /images/species/<slug>.jpg
+    // ─────────────────────────────────────────────────────────────────────────────
+    const speciesData = [
+      {
+        name: "White Oak",
+        slug: "white-oak",
+        image: "images/species/white-oak.jpg",
+        link: "species/white-oak.html",
+        attrs: { tone: 'neutral', grain: 'medium', width: 'wide standard', construction: 'both', reactive: 'y', texture: 'open straight', pattern: 'herringbone', traffic: 'heavy', price: 'mid', janka: 1360, finishpref: 'natural reactive' }
+      },
+      {
+        name: "Red Oak",
+        slug: "red-oak",
+        image: "images/species/red-oak.jpg",
+        link: "species/red-oak.html",
+        attrs: { tone: 'warm', grain: 'pronounced', width: 'standard', construction: 'both', reactive: 'n', texture: 'open straight', pattern: '', traffic: 'moderate', price: 'value mid', janka: 1290, finishpref: 'natural stained' }
+      },
+      {
+        name: "Hickory",
+        slug: "hickory",
+        image: "images/species/hickory.jpg",
+        link: "species/hickory.html",
+        attrs: { tone: 'neutral warm', grain: 'pronounced', width: 'wide standard', construction: 'both', reactive: 'n', texture: 'open wavy', pattern: '', traffic: 'heavy', price: 'mid', janka: 1820, finishpref: 'natural' }
+      },
+      {
+        name: "Hard Maple",
+        slug: "hard-maple",
+        image: "images/species/hard-maple.jpg",
+        link: "species/hard-maple.html",
+        attrs: { tone: 'light', grain: 'subtle', width: 'standard', construction: 'both', reactive: 'n', texture: 'closed straight', pattern: '', traffic: 'moderate', price: 'mid', janka: 1450, finishpref: 'natural light' }
+      },
+      {
+        name: "European/French Oak",
+        slug: "european-oak",
+        image: "images/species/european-oak.jpg",
+        link: "species/european-oak.html",
+        attrs: { tone: 'neutral light', grain: 'medium', width: 'wide', construction: 'engineered both', reactive: 'y', texture: 'open straight', pattern: 'herringbone', traffic: 'heavy', price: 'premium', janka: 1360, finishpref: 'reactive natural' }
+      },
+      {
+        name: "American Walnut",
+        slug: "american-walnut",
+        image: "images/species/american-walnut.jpg",
+        link: "species/american-walnut.html",
+        attrs: { tone: 'dark', grain: 'medium', width: 'wide', construction: 'both', reactive: 'n', texture: 'closed straight', pattern: '', traffic: 'light', price: 'premium', janka: 1010, finishpref: 'natural' }
+      },
+      {
+        name: "American Cherry",
+        slug: "american-cherry",
+        image: "images/species/american-cherry.jpg",
+        link: "species/american-cherry.html",
+        attrs: { tone: 'warm', grain: 'subtle', width: 'standard', construction: 'both', reactive: 'n', texture: 'closed straight', pattern: '', traffic: 'light', price: 'premium', janka: 950, finishpref: 'natural' }
+      },
+      {
+        name: "Birch",
+        slug: "birch",
+        image: "images/species/birch.jpg",
+        link: "species/birch.html",
+        attrs: { tone: 'light', grain: 'medium', width: 'standard', construction: 'engineered both', reactive: 'n', texture: 'closed straight', pattern: '', traffic: 'moderate', price: 'value', janka: 1260, finishpref: 'natural stained' }
+      },
+      {
+        name: "Ash",
+        slug: "ash",
+        image: "images/species/ash.jpg",
+        link: "species/ash.html",
+        attrs: { tone: 'light', grain: 'pronounced', width: 'wide standard', construction: 'both', reactive: 'n', texture: 'open straight', pattern: 'herringbone', traffic: 'heavy', price: 'mid', janka: 1320, finishpref: 'stained' }
+      },
+      {
+        name: "Pine (Heart Pine/Longleaf)",
+        slug: "heart-pine",
+        image: "images/species/heart-pine.jpg",
+        link: "species/heart-pine.html",
+        attrs: { tone: 'warm', grain: 'pronounced', width: 'wide', construction: 'both', reactive: 'n', texture: 'open wavy', pattern: '', traffic: 'moderate', price: 'mid', janka: 1048, finishpref: 'oiled' }
+      },
+      {
+        name: "Beech",
+        slug: "beech",
+        image: "images/species/beech.jpg",
+        link: "species/beech.html",
+        attrs: { tone: 'light neutral', grain: 'subtle', width: 'standard', construction: 'both', reactive: 'n', texture: 'closed straight', pattern: '', traffic: 'moderate', price: 'mid', janka: 1300, finishpref: 'light' }
+      }
+    ];
+
+    // Expanded descriptions for dropdowns
+    const detailMap = {
+      "red-oak": {
+        title: "Red Oak (Northern/Southern)",
+        appearance: "Warm pink to russet; strong grain with visible cathedrals.",
+        janka: 1290,
+        finish: "Excellent stain versatility; takes a broad range of colors evenly.",
+        decor: ["Traditional", "Craftsman", "Transitional", "Americana"],
+        notes: "Widely available; the classic benchmark species."
+      },
+      "white-oak": {
+        title: "White Oak (American/European)",
+        appearance: "Beige to taupe with subtle olive undertones; tighter grain than red oak.",
+        janka: 1360,
+        finish: "High tannin content; ideal for reactive stains, fuming, and lyes.",
+        decor: ["Modern Minimal", "Scandinavian", "Japandi", "Contemporary Luxury", "Coastal"],
+        notes: "Excellent for wide-plank engineered formats."
+      },
+      "european-oak": {
+        title: "European/French Oak",
+        appearance: "Beige to wheat; striking medullary rays in rift and quartered cuts.",
+        janka: 1360,
+        finish: "Elevated tannins accept reactive processes gracefully; pairs with hardwax oils.",
+        decor: ["European Farmhouse", "Parisian Modern", "Wabi-sabi", "Coastal"],
+        notes: "Often specified for contemporary, wide-plank looks."
+      },
+      "hickory": {
+        title: "Hickory/Pecan",
+        appearance: "High contrast sapwood/heartwood; dramatic flowing grain.",
+        janka: 1820,
+        finish: "Takes natural and neutral finishes well; character grades highlight movement.",
+        decor: ["Rustic", "Lodge", "Modern Farmhouse", "Southwest"],
+        notes: "Expect more seasonal movement in wide solid boards."
+      },
+      "hard-maple": {
+        title: "Hard Maple (Sugar/Canadian)",
+        appearance: "Pale cream; tight, subtle grain; clean visual.",
+        janka: 1450,
+        finish: "Prone to blotching on dark stains without proper conditioning; excels in light tones.",
+        decor: ["Sleek Contemporary", "Minimalist", "Scandinavian", "Sport Courts"],
+        notes: null
+      },
+      "american-walnut": {
+        title: "American Walnut (Black Walnut)",
+        appearance: "Chocolate to coffee with occasional purple undertones; flowing grain.",
+        janka: 1010,
+        finish: "Best in natural to mid tones to preserve depth; very dark stains reduce chatoyance.",
+        decor: ["Mid-century Modern", "Boutique Luxe", "Moody Contemporary"],
+        notes: null
+      },
+      "american-cherry": {
+        title: "American Cherry (Black Cherry)",
+        appearance: "Light pinkish red that deepens with UV; fine, even grain.",
+        janka: 950,
+        finish: "Ages to a rich patina; UV-inhibiting finishes slow darkening.",
+        decor: ["Classic Traditional", "Federal/Shaker", "Romantic Cottage"],
+        notes: null
+      },
+      "ash": {
+        title: "Ash",
+        appearance: "Pale base with bold, open grain similar to oak.",
+        janka: 1320,
+        finish: "Accepts stain evenly across a wide color range.",
+        decor: ["Nordic Light", "Athletic/Active", "Casual Contemporary"],
+        notes: "Regional availability impacted by emerald ash borer."
+      },
+      "birch": {
+        title: "Birch (Yellow/Red)",
+        appearance: "Cream to light brown; fine but lively grain.",
+        janka: 1260,
+        finish: "Can appear blotchy on dark stains; best with natural to mid tones.",
+        decor: ["Transitional Value", "Kid-friendly Casual", "Small Apartments"],
+        notes: null
+      },
+      "beech": {
+        title: "Beech",
+        appearance: "Uniform light buff; fine straight grain.",
+        janka: 1300,
+        finish: "Takes pale, neutral finishes beautifully.",
+        decor: ["Minimalist", "Soft Contemporary", "Airy Studios"],
+        notes: null
+      },
+      "heart-pine": {
+        title: "Pine (Heart Pine/Longleaf)",
+        appearance: "Honey to amber with prominent knots.",
+        jankaMin: 870,
+        jankaMax: 1225,
+        finish: "Embrace patina; penetrating oils and hardwax finishes suit the look.",
+        decor: ["Farmhouse", "Colonial", "Cottagecore", "Coastal Rustic"],
+        notes: null
+      }
+    };
+
+    function jankaLabel(spec) {
+      if (spec.jankaMin && spec.jankaMax) return `${spec.jankaMin}–${spec.jankaMax} Janka`;
+      if (spec.janka) return `≈ ${spec.janka} Janka`;
+      return `Janka: n/a`;
+    }
+    function jankaPct(spec) {
+      const min = 400, max = 2200;
+      let v = spec.janka ? spec.janka : (spec.jankaMin && spec.jankaMax ? (spec.jankaMin + spec.jankaMax) / 2 : 1000);
+      v = Math.max(min, Math.min(max, v));
+      return Math.round(((v - min) / (max - min)) * 100);
+    }
+    function buildDetails(spec) {
+      const frag = document.createDocumentFragment();
+      const h4 = document.createElement('h4');
+      h4.textContent = spec.title;
+      frag.appendChild(h4);
+
+      const grid = document.createElement('div');
+      grid.className = 'spec-grid';
+
+      const addRow = (k, vnode) => {
+        const kEl = document.createElement('div');
+        kEl.className = 'k'; kEl.textContent = k;
+        const vEl = document.createElement('div');
+        vEl.className = 'v';
+        if (typeof vnode === 'string') vEl.textContent = vnode; else vEl.appendChild(vnode);
+        grid.appendChild(kEl); grid.appendChild(vEl);
+      };
+
+      if (spec.appearance) addRow('Appearance', spec.appearance);
+
+      const hardWrap = document.createElement('div');
+      const hardLabel = document.createElement('div');
+      hardLabel.style.marginBottom = '6px';
+      hardLabel.textContent = jankaLabel(spec);
+      const meter = document.createElement('div');
+      meter.className = 'meter';
+      const fill = document.createElement('div');
+      fill.className = 'fill';
+      fill.style.setProperty('--w', jankaPct(spec) + '%');
+      meter.appendChild(fill);
+      hardWrap.appendChild(hardLabel);
+      hardWrap.appendChild(meter);
+      addRow('Hardness', hardWrap);
+
+      if (spec.finish) addRow('Finish behavior', spec.finish);
+
+      if (spec.decor && spec.decor.length) {
+        const chips = document.createElement('div');
+        chips.className = 'decor-chips';
+        spec.decor.forEach(name => {
+          const c = document.createElement('span');
+          c.className = 'chip';
+          c.textContent = name;
+          chips.appendChild(c);
+        });
+        addRow('Best decor', chips);
+      }
+
+      if (spec.notes) addRow('Notes', spec.notes);
+
+      frag.appendChild(grid);
+      return frag;
+    }
+
+    const list = document.getElementById('speciesList');
+    const q = document.getElementById('q');
+    const empty = document.getElementById('noResults');
+
+    function filterList() { applyFilterSort(); }
+    q?.addEventListener('input', filterList);
+
+    const makeCard = (s, idx) => {
+      const container = document.createElement('div');
+      container.setAttribute('data-species', s.slug);
+
+      const a = document.createElement('a');
+      a.className = 'species';
+      a.href = `#${s.slug}`;
+      a.setAttribute('role', 'button');
+      a.setAttribute('aria-expanded', 'false');
+      a.setAttribute('aria-controls', `${s.slug}-details`);
+      a.setAttribute('aria-label', `${s.name}`);
+
+      const bg = document.createElement('div');
+      bg.className = 'bg';
+      const ph = document.createElement('div');
+      ph.className = 'ph';
+      bg.appendChild(ph);
+
+      if (s.image) {
+        const img = document.createElement('img');
+        img.alt = `${s.name} wood texture`;
+        img.loading = 'lazy';
+        img.decoding = 'async';
+        img.src = s.image;
+        bg.appendChild(img);
+      }
+
+      const veil = document.createElement('div');
+      veil.className = 'veil';
+
+      const content = document.createElement('div');
+      content.className = 'content';
+
+      const thumb = document.createElement('div');
+      thumb.className = 'thumb';
+      if (s.image) {
+        const timg = document.createElement('img');
+        timg.alt = `${s.name} preview`;
+        timg.loading = 'lazy';
+        timg.decoding = 'async';
+        timg.src = s.image;
+        thumb.appendChild(timg);
+      }
+
+      const copy = document.createElement('div');
+      copy.className = 'copy';
+      copy.innerHTML = `<h3>${s.name}</h3>`;
+
+      const cta = document.createElement('div');
+      cta.className = 'cta';
+      cta.textContent = 'Quick facts';
+
+      const badge = document.createElement('div');
+      badge.className = 'badge';
+      badge.textContent = `#${idx + 1}`;
+
+      content.appendChild(thumb);
+      content.appendChild(copy);
+      content.appendChild(cta);
+
+      a.appendChild(bg);
+      a.appendChild(veil);
+      a.appendChild(content);
+      a.appendChild(badge);
+
+      const details = document.createElement('div');
+      details.className = 'details';
+      details.id = `${s.slug}-details`;
+
+      const spec = detailMap[s.slug];
+      if (spec) details.appendChild(buildDetails(spec));
+
+      a.addEventListener('click', (e) => {
+        e.preventDefault();
+        if (!spec) return;
+        const isOpen = details.classList.toggle('open');
+        a.setAttribute('aria-expanded', String(isOpen));
+      });
+
+      container.appendChild(a);
+      container.appendChild(details);
+      return container;
+    };
+
+    // Build once and keep nodes for cheap reorders
+    const speciesNodes = new Map();
+    speciesData.forEach((s, i) => {
+      const node = makeCard(s, i);
+      speciesNodes.set(s.slug, node);
+      list.appendChild(node);
+    });
+
+    function getSelectedFilters() {
+      const selected = {};
+      document.querySelectorAll('input[data-filter]:checked').forEach(inp => {
+        const key = inp.dataset.filter;
+        if (!selected[key]) selected[key] = new Set();
+        selected[key].add(inp.value);
+      });
+      return selected;
+    }
+
+    function scoreSpecies(entry, selected) {
+      let score = 0;
+      const attrs = entry.attrs || {};
+      for (const [k, values] of Object.entries(selected)) {
+        const hay = (attrs[k] || '').toString().toLowerCase();
+        values.forEach(v => { if (hay.includes(v)) score += 1; });
+      }
+      return score;
+    }
+
+    function applyFilterSort() {
+      const selected = getSelectedFilters();
+      const scored = speciesData.map(s => ({ s, score: scoreSpecies(s, selected) }));
+      scored.sort((a, b) => b.score - a.score);
+      scored.forEach(({ s }) => {
+        const node = speciesNodes.get(s.slug);
+        if (node) list.appendChild(node);
+      });
+
+      // show empty state only when every card is hidden (not used here because we reorder only)
+      empty?.classList.toggle('show', false);
+    }
+
+    // Wire up instant updates and single-select for chip groups
+    document.querySelectorAll('input[data-filter]').forEach(inp => {
+      inp.addEventListener('change', (e) => {
+        const el = e.currentTarget;
+        const chipGroup = el.closest('.chip-opt');
+        if (chipGroup && el.checked) {
+          chipGroup.querySelectorAll('input[type="checkbox"]').forEach(other => {
+            if (other !== el) other.checked = false;
+          });
+        }
+        applyFilterSort();
+      });
+    });
+
+    // Clear button resets all selections and original order
+    document.getElementById('clearFilters')?.addEventListener('click', () => {
+      document.querySelectorAll('input[data-filter]:checked').forEach(inp => { inp.checked = false; });
+      speciesData.forEach(s => {
+        const node = speciesNodes.get(s.slug);
+        if (node) list.appendChild(node);
+      });
+    });
+
+    // ─────────────── Runtime tests (console) ───────────────
+    (function runDevTests(){
+      const results = [];
+      const assert = (name, cond) => { results.push({ name, pass: !!cond }); console[cond ? 'log' : 'error'](`${cond ? '✓' : '✗'} ${name}`); };
+
+      // Test A: chip single-select within "Plank Width"
+      const wWide = document.getElementById('width-wide');
+      const wStd  = document.getElementById('width-standard');
+      if (wWide && wStd) {
+        wWide.checked = true; wWide.dispatchEvent(new Event('change', { bubbles: true }));
+        wStd.checked  = true; wStd.dispatchEvent(new Event('change', { bubbles: true }));
+        assert('Width chips are single-select', wStd.checked && !wWide.checked);
+      }
+
+      // Test B: Clear button clears chips
+      document.getElementById('clearFilters')?.click();
+      const anyChecked = !!document.querySelector('input[data-filter]:checked');
+      assert('Clear button clears all filter chips/checkboxes', !anyChecked);
+
+      // Test C: Reactive filter prioritizes reactive-friendly oaks
+      const fx = document.getElementById('fx-reactive');
+      if (fx) {
+        fx.checked = true; fx.dispatchEvent(new Event('change', { bubbles: true }));
+        const top = document.querySelector('#speciesList [data-species]')?.getAttribute('data-species');
+        assert('Reactive filter bubbles matching species to the top', top === 'white-oak' || top === 'european-oak');
+        document.getElementById('clearFilters')?.click();
+      }
+
+      // Test D: Texture filter affects ordering (closed should surface maple/walnut)
+      const txClosed = document.getElementById('tx-closed');
+      if (txClosed) {
+        txClosed.checked = true; txClosed.dispatchEvent(new Event('change', { bubbles: true }));
+        const top2 = document.querySelector('#speciesList [data-species]')?.getAttribute('data-species');
+        const closedCandidates = new Set(['hard-maple','american-walnut','beech','birch','american-cherry']);
+        assert('Texture=closed surfaces tight-grain species', closedCandidates.has(top2));
+        document.getElementById('clearFilters')?.click();
+      }
+    })();
+  </script>
+</body>
+</html>
